@@ -9,11 +9,11 @@ public class Review {
     private int id;
     private int restaurantId;
 
-    public Review(String content, String writtenBy, int rating, int id) {
+    public Review(String content, String writtenBy, int rating, int restaurantId) {
         this.content = content;
         this.writtenBy = writtenBy;
         this.rating = rating;
-        this.id = id;
+        this.restaurantId = restaurantId;
     }
 
     public String getContent() {
@@ -71,5 +71,16 @@ public class Review {
     @Override
     public int hashCode() {
         return Objects.hash(content, writtenBy, rating, id, restaurantId);
+    }
+
+    @Override
+    public String toString() {
+        return "Review{" +
+                "content='" + content + '\'' +
+                ", writtenBy='" + writtenBy + '\'' +
+                ", rating=" + rating +
+                ", id=" + id +
+                ", restaurantId=" + restaurantId +
+                '}';
     }
 }

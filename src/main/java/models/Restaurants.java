@@ -103,4 +103,17 @@ public class Restaurants {
     public int hashCode() {
         return Objects.hash(name, address, zipcode, phone, email, website, id);
     }
+
+    @Override
+    public String toString() {
+        return "Restaurants{" +
+                "name='" + name + '\'' +
+                ", address='" + address + '\'' +
+                ", zipcode='" + zipcode + '\'' +
+                ", phone='" + phone + '\'' +
+                ", email='" + email + '\'' +
+                ", website='" + website + '\'' +
+                ", id=" + id +
+                '}';
+    }
 }
