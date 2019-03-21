@@ -1,10 +1,12 @@
 package dao;
 
+import models.FoodType;
 import models.Restaurants;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
 import org.sql2o.Sql2oException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Sql2oRestaurantDao implements RestaurantDao {
@@ -36,6 +38,41 @@ public class Sql2oRestaurantDao implements RestaurantDao {
                     .executeAndFetch(Restaurants.class);
         }
 
+    }
+
+    @Override
+    public void addRestaurantToFoodType(Restaurants restaurants, FoodType foodType) {
+     String sql = "INSERT INTO restaurants_foodtypes(foodtypeid,restaurantid) VALUES(:foodtypeId,:restaurantId)";
+     try(Connection connection = sql2o.open()){
+         connection.createQuery(sql)
+                 .addParameter("foodtypeId",foodType.getId())
+                 .addParameter("restaurantId",restaurants.getId())
+                 .executeUpdate();
+     } catch (Sql2oException e){
+         e.printStackTrace();
+     }
+    }
+
+    @Override
+    public List<FoodType> getFoodTypesByRestaurants(int restaurantId) {
+        List<FoodType> foodTypes = new ArrayList<>();
+        String query = "SELECT foodTypeId FROM restaurants_foodtypes WHERE restaurantid = :restaurantId";
+        try(Connection connection = sql2o.open()){
+            List<Integer> allFoodTypesId = connection.createQuery(query)
+                    .addParameter("restaurantId",restaurantId)
+                    .executeAndFetch(Integer.class);
+            for (Integer foodTypeId : allFoodTypesId){
+                String sql = "SELECT * FROM foodtypes WHERE id = :foodtypeid";
+                foodTypes.add(
+                        connection.createQuery(sql)
+                        .addParameter("foodtypeid",foodTypeId)
+                        .executeAndFetchFirst(FoodType.class)
+                );
+            }
+        }catch (Sql2oException e){
+            e.printStackTrace();
+        }
+        return foodTypes;
     }
 
     @Override
@@ -71,9 +108,13 @@ public class Sql2oRestaurantDao implements RestaurantDao {
     @Override
     public void deleteById(int id) {
         String sql = "DELETE FROM restaurants where id = :id";
+        String joinTableQuery = "DELETE FROM restaurants_foodtypes WHERE restaurantid = :restaurantId";
         try(Connection connection = sql2o.open()){
             connection.createQuery(sql)
                     .addParameter("id",id)
+                    .executeUpdate();
+            connection.createQuery(joinTableQuery)
+                    .addParameter("restaurantId",id)
                     .executeUpdate();
         } catch (Sql2oException e){
             e.printStackTrace();

@@ -1,6 +1,7 @@
 package dao;
 
 import models.FoodType;
+import models.Restaurants;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -57,7 +58,41 @@ public class Sql2oFoodTypeDaoTest {
         assertEquals(0,foodTypeDao.getAll().size());
     }
 
+    @Test
+    public void addsFoodTypeCorrectlyToRestaurant(){
+        Restaurants restaurants = setUpRestaurant();
+        Restaurants anotherRestaurant = setUpAlternativeRestaurant();
+        restaurantDao.add(restaurants);
+        restaurantDao.add(anotherRestaurant);
+
+        FoodType foodType = setUpFoodType();
+        foodTypeDao.add(foodType);
+
+        foodTypeDao.addFoodTypeToRestaurant(foodType,restaurants);
+        foodTypeDao.addFoodTypeToRestaurant(foodType,anotherRestaurant);
+        assertEquals(2,foodTypeDao.getAllRestaurantsForAFoodType(foodType.getId()).size());
+    }
+
+    @Test
+    public void deletingRestaurantAlsoUpdatesJoinTable(){
+        FoodType foodType = new FoodType("Cakes");
+        foodTypeDao.add(foodType);
+        Restaurants restaurants = setUpRestaurant();
+        restaurantDao.add(restaurants);
+        Restaurants anotherRestaurant = setUpAlternativeRestaurant();
+        restaurantDao.add(anotherRestaurant);
+
+        restaurantDao.addRestaurantToFoodType(restaurants,foodType);
+        restaurantDao.addRestaurantToFoodType(anotherRestaurant,foodType);
+
+        restaurantDao.deleteById(anotherRestaurant.getId());
+
+        assertEquals(0,restaurantDao.getFoodTypesByRestaurants(anotherRestaurant.getId()).size());
+    }
+
+
     //Set Up
+
     public FoodType setUpFoodType(){
         FoodType foodType = new FoodType("Mochi");
         foodTypeDao.add(foodType);
@@ -68,4 +103,15 @@ public class Sql2oFoodTypeDaoTest {
         foodTypeDao.add(anotherFoodType);
         return anotherFoodType;
     }
+    public Restaurants setUpRestaurant(){
+        Restaurants restaurants = new Restaurants("Burger King","The Hub","1234","1234567","info@bk.com","www.bk.com");
+        restaurantDao.add(restaurants);
+        return restaurants;
+    }
+    private Restaurants setUpAlternativeRestaurant() {
+        Restaurants restaurants = new Restaurants("Mama Rocks","Westlands","0987","0987679","mama@rocks.com","www.mama.rocks");
+        restaurantDao.add(restaurants);
+        return restaurants;
+    }
+
 }

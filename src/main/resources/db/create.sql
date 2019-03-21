@@ -22,3 +22,9 @@ create table if not exists reviews(
   rating int,
   restaurantID INTEGER
 );
+-- Many to many relationship between restaurants and foodtypes
+create table if not exists restaurants_foodtypes(
+  id int primary key auto_increment,
+  foodtypeid INTEGER,
+  restaurantid INTEGER
+);

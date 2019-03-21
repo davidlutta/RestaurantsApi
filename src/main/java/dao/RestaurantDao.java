@@ -1,5 +1,6 @@
 package dao;
 
+import models.FoodType;
 import models.Restaurants;
 
 import java.util.List;
@@ -7,9 +8,11 @@ import java.util.List;
 public interface RestaurantDao {
     //create
     void add(Restaurants restaurants);
+    void addRestaurantToFoodType(Restaurants restaurants, FoodType foodType);
 
     //read
     List<Restaurants> getAll();
+    List<FoodType> getFoodTypesByRestaurants(int restaurantId);
     Restaurants findById(int id);
 
     //update
