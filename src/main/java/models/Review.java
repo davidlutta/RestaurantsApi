@@ -8,12 +8,16 @@ public class Review {
     private int rating;
     private int id;
     private int restaurantId;
+    private long createdat;
+    private String formattedCreatedAt;
 
     public Review(String content, String writtenBy, int rating, int restaurantId) {
         this.content = content;
         this.writtenBy = writtenBy;
         this.rating = rating;
         this.restaurantId = restaurantId;
+        this.createdat = System.currentTimeMillis();
+        setFormattedCreatedAt();
     }
 
     public String getContent() {
@@ -54,6 +58,22 @@ public class Review {
 
     public void setRestaurantId(int restaurantId) {
         this.restaurantId = restaurantId;
+    }
+
+    public long getCreatedat() {
+        return createdat;
+    }
+
+    public void setCreatedat(long createdat) {
+        this.createdat = System.currentTimeMillis();
+    }
+
+    public String getFormattedCreatedAt() {
+        return formattedCreatedAt;
+    }
+
+    public void setFormattedCreatedAt(String formattedCreatedAt) {
+        this.formattedCreatedAt = "somtin";
     }
 
     @Override

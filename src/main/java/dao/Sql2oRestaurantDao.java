@@ -78,7 +78,6 @@ public class Sql2oRestaurantDao implements RestaurantDao {
     @Override
     public Restaurants findById(int id) {
         String sql = "SELECT * FROM restaurants where id = :id";
-        //SELECT * FROM restaurants WHERE id = :id
         try(Connection connection = sql2o.open()) {
             return connection.createQuery(sql)
                     .addParameter("id",id)

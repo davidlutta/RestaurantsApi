@@ -13,6 +13,7 @@ public interface FoodTypeDao {
     //read
     List<FoodType> getAll();
     List<Restaurants> getAllRestaurantsForAFoodType(int foodTypeId);
+    FoodType findById(int id);
 
     //delete
     void deletebyId(int id);

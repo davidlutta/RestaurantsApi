@@ -20,7 +20,8 @@ create table if not exists reviews(
   writtenby varchar(40),
   content text,
   rating int,
-  restaurantID INTEGER
+  restaurantID INTEGER,
+  createdAt BIGINT
 );
 -- Many to many relationship between restaurants and foodtypes
 create table if not exists restaurants_foodtypes(

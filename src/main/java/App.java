@@ -37,12 +37,13 @@ public class App {
         // FIXME: 3/17/19
 
         //CREATE
-//        post("/restaurants/new", "application/json", (req, res) -> {
-//            Restaurants restaurant = gson.fromJson(req.body(), Restaurants.class);
-//            restaurantDao.add(restaurant);
-//            res.status(201);
-//            return gson.toJson(restaurant);
-//        });
+        post("/restaurants/new", "application/json", (req, res) -> {
+            Restaurants restaurant = gson.fromJson(req.body(), Restaurants.class);
+            restaurantDao.add(restaurant);
+            res.status(201);
+            req.body();
+            return gson.toJson(restaurant);
+        });
         post("/foodtypes/new","application/json",(request, response) -> {
             FoodType foodType = gson.fromJson(request.body(),FoodType.class);
             foodTypeDao.add(foodType);
@@ -56,6 +57,21 @@ public class App {
             reviewDao.add(review);
             response.status(201);
             return gson.toJson(review);
+        });
+        post("/restaurants/:restaurantId/foodtype/:foodtypeId","application/json",(request, response) -> {
+            String restId = request.params("restaurantId");
+            String foodId = request.params("foodtypeId");
+
+            Restaurants foundRestaurant = restaurantDao.findById(Integer.parseInt(restId));
+            FoodType foundFoodtype = foodTypeDao.findById(Integer.parseInt(foodId));
+
+            if (foundRestaurant != null && foundFoodtype != null){
+                foodTypeDao.addFoodTypeToRestaurant(foundFoodtype,foundRestaurant);
+                response.status(201);
+                return gson.toJson(String.format("Restaurant '%s' and Foodtype '%s' have been associated",foundRestaurant.getName(),foundFoodtype.getName()));
+            } else {
+                throw new ApiException(404,String.format("Restaurant or foodtype do not exist"));
+            }
         });
 
 
@@ -91,6 +107,17 @@ public class App {
                 return gson.toJson(allReviews);
             }
         });
+        get("restaurants/:id/foodtypes","application/json",(request, response) -> {
+            String restId = request.params("id");
+            Restaurants restaurantFound = restaurantDao.findById(Integer.parseInt(restId));
+            if (restaurantFound == null){
+                throw new ApiException(404,String.format("No restaurant with the id: \"%s\" exists", request.params("id")));
+            } else if (restaurantDao.getFoodTypesByRestaurants(Integer.parseInt(restId)).size() ==0){
+                return "{\"message\":\"I'm sorry, but no foodtypes are listed for this restaurant.\"}";
+            } else {
+                return gson.toJson(restaurantDao.getFoodTypesByRestaurants(Integer.parseInt(restId)));
+            }
+        });
         get("/foodtypes","application/json",(request, response) -> {
             if (foodTypeDao.getAll().size() > 0){
                 return gson.toJson(foodTypeDao.getAll());
@@ -98,6 +125,18 @@ public class App {
                 return "{\"message\":\"I'm sorry, but no Foodtypes are currently listed in the database.\"}";
             }
         });
+        get("/foodtypes/:id/restaurants","application/json",(request, response) -> {
+            String foodId = request.params("id");
+            FoodType foodTypeToBeFound = foodTypeDao.findById(Integer.parseInt(foodId));
+            if (foodTypeToBeFound == null){
+                throw new ApiException(404,String.format("No foodtype with the id \"%s\" exists",foodId));
+            } else if(foodTypeDao.getAllRestaurantsForAFoodType(Integer.parseInt(foodId)).size() == 0){
+                return "{\"message\":\"I'm sorry, but no restaurants are listed for this foodtype.\"}";
+            } else {
+                return gson.toJson(foodTypeDao.getAllRestaurantsForAFoodType(Integer.parseInt(foodId)));
+            }
+        });
+
 
 
         //Filters
