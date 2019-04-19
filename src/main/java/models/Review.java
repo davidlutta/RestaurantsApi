@@ -1,5 +1,7 @@
 package models;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Objects;
 
 public class Review {
@@ -8,7 +10,7 @@ public class Review {
     private int rating;
     private int id;
     private int restaurantId;
-    private long createdat;
+    private long createdAt;
     private String formattedCreatedAt;
 
     public Review(String content, String writtenBy, int rating, int restaurantId) {
@@ -16,7 +18,7 @@ public class Review {
         this.writtenBy = writtenBy;
         this.rating = rating;
         this.restaurantId = restaurantId;
-        this.createdat = System.currentTimeMillis();
+        this.createdAt = System.currentTimeMillis();
         setFormattedCreatedAt();
     }
 
@@ -60,20 +62,28 @@ public class Review {
         this.restaurantId = restaurantId;
     }
 
-    public long getCreatedat() {
-        return createdat;
+    public long getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreatedat(long createdat) {
-        this.createdat = System.currentTimeMillis();
+    public void setCreatedAt(long createdAt) {
+        this.createdAt = System.currentTimeMillis();
     }
 
     public String getFormattedCreatedAt() {
-        return formattedCreatedAt;
+        Date date  = new Date(createdAt);
+        String datePattern = "MM/dd/yyyy @ k:mm a";
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(datePattern);
+        return simpleDateFormat.format(date);
     }
 
-    public void setFormattedCreatedAt(String formattedCreatedAt) {
-        this.formattedCreatedAt = "somtin";
+    public void setFormattedCreatedAt() {
+        Date date = new Date(createdAt);
+        String datepattern = "MM/dd/yyyy @ k:mm a";
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(datepattern);
+        this.formattedCreatedAt = simpleDateFormat.format(date);
     }
 
     @Override

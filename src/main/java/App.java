@@ -34,7 +34,6 @@ public class App {
         reviewDao = new Sql2oReviewDao(sql2o);
 //        connection = sql2o.open();
 
-        // FIXME: 3/17/19
 
         //CREATE
         post("/restaurants/new", "application/json", (req, res) -> {
